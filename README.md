@@ -1,0 +1,1 @@
+# 20180224_JUG-BG_Industrial-Vaadin
