@@ -30,6 +30,6 @@ public class MyUI extends UI {
 
   @WebServlet("/*")
   @VaadinServletConfiguration(productionMode = false, ui = MyUI.class)
-  public class MyProjectServlet extends VaadinServlet { }
+  public static class MyProjectServlet extends VaadinServlet { }
 
 }
