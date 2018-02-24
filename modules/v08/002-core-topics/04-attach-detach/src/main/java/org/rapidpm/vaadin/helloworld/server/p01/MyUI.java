@@ -1,5 +1,6 @@
 package org.rapidpm.vaadin.helloworld.server.p01;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
@@ -13,6 +14,8 @@ import java.util.function.Supplier;
 /**
  *
  */
+
+@PreserveOnRefresh
 public class MyUI extends CoreUI {
 
   public static class DataHolder {

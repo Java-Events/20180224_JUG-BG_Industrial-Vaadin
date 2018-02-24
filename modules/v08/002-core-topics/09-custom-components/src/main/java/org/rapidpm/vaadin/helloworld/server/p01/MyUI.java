@@ -29,6 +29,9 @@ public class MyUI extends CoreUI {
   }
 
   public static class MyComponentB extends Composite {
+
+
+
     private TextField name        = new TextField("Name");
     private TextField description = new TextField("Description");
 

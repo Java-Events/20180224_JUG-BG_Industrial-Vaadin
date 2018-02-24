@@ -17,7 +17,14 @@ public class MyUI extends CoreUI {
 
   @Override
   public Supplier<Component> componentSupplier() {
-    return () -> new Button("I am a button");
+    return () -> {
+
+      final Button button = new Button("I am a button");
+
+
+      return button;
+
+    };
   }
 
 
