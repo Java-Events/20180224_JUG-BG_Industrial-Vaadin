@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--<parent>-->
+  <!--<groupId>org.rapidpm</groupId>-->
+  <!--<artifactId>rapidpm-dependencies</artifactId>-->
+  <!--<version>3.5.8</version>-->
+  <!--</parent>-->
+
+  <groupId>org.rapidpm.vaadin.workshop</groupId>
+  <artifactId>vaadin</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <modules>
+    <module>modules</module>
+  </modules>
+  <packaging>pom</packaging>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+
+    <selenium.server.version>3.4.0</selenium.server.version>
+    <javax.servlet-api.version>4.0.0</javax.servlet-api.version>
+
+    <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
+
+    <rapidpm-dependencies.version>3.5.8</rapidpm-dependencies.version>
+    <rapidpm-ddi.version>1.0.3</rapidpm-ddi.version>
+    <rapidpm-microservice.version>1.0.3</rapidpm-microservice.version>
+    <rapidpm-functional-reactive.version>0.5.1</rapidpm-functional-reactive.version>
+
+    <wildfly-swarm.version>2018.1.0</wildfly-swarm.version>
+    <undertow.version>1.4.20.Final</undertow.version>
+
+    <slf4j.version>1.7.25</slf4j.version>
+    <jacoco.version>0.8.0</jacoco.version>
+
+    <!--TDD jUnit5-->
+    <junit.jupiter.version>5.1.0</junit.jupiter.version>
+    <junit.platform.version>1.1.0</junit.platform.version>
+
+    <!--Mutation Testing-->
+    <pitest.version>1.3.2</pitest.version>
+    <pitest-junit5-plugin.version>0.4</pitest-junit5-plugin.version>
+    <pitest-prod-classes>org.rapidpm.*</pitest-prod-classes>
+    <pitest-test-classes>junit.org.rapidpm*</pitest-test-classes>
+    <stagemonitor.version>0.87.4</stagemonitor.version>
+  </properties>
+
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>vaadin-prereleases</id>
+      <url>https://maven.vaadin.com/vaadin-prereleases</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <repositories>
+    <repository>
+      <id>rapidpm</id>
+      <url>http://nexus.rapidpm.org:8081/repository/maven-public/</url>
+    </repository>
+  </repositories>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.rapidpm</groupId>
+      <artifactId>rapidpm-dependencies-core-logger</artifactId>
+      <version>${rapidpm-dependencies.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rapidpm</groupId>
+      <artifactId>rapidpm-functional-reactive</artifactId>
+      <version>${rapidpm-functional-reactive.version}</version>
+    </dependency>
+
+    <!--API´s-->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${javax.servlet-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-plugin</artifactId>
+          <version>${wildfly-swarm.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.7.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <!--downgrade for jUnit5-->
+        <!--http://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.19.1</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.platform</groupId>
+              <artifactId>junit-platform-surefire-provider</artifactId>
+              <version>${junit.platform.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter-engine</artifactId>
+              <version>${junit.jupiter.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-repository-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jdeps-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>3.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.19.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>3.0.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add sources</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/annotations</source>
+                <!--<source>src/main/scala</source>-->
+                <source>src/main/java</source>
+                <!--<source>src/main/kotlin</source>-->
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add generated sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/annotations</source>
+                <!--<source>src/main/scala</source>-->
+                <source>src/main/java</source>
+                <!--<source>src/main/kotlin</source>-->
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add generated test sources</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-test-sources/test-annotations</source>
+                <!--<source>src/test/scala</source>-->
+                <source>src/test/java</source>
+                <!--<source>src/test/kotlin</source>-->
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>3.9.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <!--  must be on the classpath  -->
+        <groupId>org.jacoco</groupId>
+        <artifactId>org.jacoco.agent</artifactId>
+        <classifier>runtime</classifier>
+        <version>${jacoco.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jacoco</groupId>
+        <artifactId>org.jacoco.ant</artifactId>
+        <version>${jacoco.version}</version>
+        <!--<scope>test</scope>-->
+      </dependency>
+
+      <!--jUnit5-->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-launcher</artifactId>
+        <scope>test</scope>
+        <version>${junit.platform.version}</version>
+      </dependency>
+      <!-- Only required to run tests in an IDE that bundles an older version -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <scope>test</scope>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest</artifactId>
+        <version>${pitest.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+
+
+      <!--Undertow-->
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-core</artifactId>
+        <version>${undertow.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-servlet</artifactId>
+        <version>${undertow.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-websockets-jsr</artifactId>
+        <version>${undertow.version}</version>
+      </dependency>
+
+
+      <!--APM - Stagemonitor-->
+      <dependency>
+        <groupId>org.stagemonitor</groupId>
+        <artifactId>stagemonitor-web-servlet</artifactId>
+        <optional>true</optional>
+        <version>${stagemonitor.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stagemonitor</groupId>
+        <artifactId>stagemonitor-tracing</artifactId>
+        <optional>true</optional>
+        <version>${stagemonitor.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stagemonitor</groupId>
+        <artifactId>stagemonitor-jvm</artifactId>
+        <optional>true</optional>
+        <version>${stagemonitor.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stagemonitor</groupId>
+        <artifactId>stagemonitor-os</artifactId>
+        <optional>true</optional>
+        <version>${stagemonitor.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stagemonitor</groupId>
+        <artifactId>stagemonitor-tracing-elasticsearch</artifactId>
+        <optional>true</optional>
+        <version>${stagemonitor.version}</version>
+      </dependency>
+
+
+      <!--Persistence-->
+      <dependency>
+        <groupId>org.mapdb</groupId>
+        <artifactId>mapdb</artifactId>
+        <version>3.0.5</version>
+      </dependency>
+
+
+
+
+    </dependencies>
+  </dependencyManagement>
+
+
+  <profiles>
+    <profile>
+      <id>qm-qs-no-snapshots</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-no-snapshots</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireReleaseDeps>
+                      <message>No Snapshots Allowed!</message>
+                    </requireReleaseDeps>
+                  </rules>
+                  <fail>true</fail>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>java-jdk-8</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>1.8</source>
+              <target>1.8</target>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>false</showWarnings>
+              <optimize>true</optimize>
+
+            </configuration>
+
+            <executions>
+              <execution>
+                <phase>compile</phase>
+                <id>compile-001</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <!--BUG JDK-8062800-->
+                <configuration>
+                  <useIncrementalCompilation>false</useIncrementalCompilation>
+                </configuration>
+                <!--BUG JDK-8062800-->
+              </execution>
+              <execution>
+                <phase>test-compile</phase>
+                <id>test-compile-001</id>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <!--BUG JDK-8062800-->
+                <configuration>
+                  <useIncrementalCompilation>false</useIncrementalCompilation>
+                </configuration>
+                <!--BUG JDK-8062800-->
+              </execution>
+              <!--&lt;!&ndash;<execution>&ndash;&gt;-->
+              <!--<phase>test-compile</phase>-->
+              <!--<id>test-compile-002</id>-->
+              <!--<goals><goal>testCompile</goal></goals>-->
+              <!--&lt;!&ndash;BUG JDK-8062800&ndash;&gt;-->
+              <!--<configuration>-->
+              <!--<useIncrementalCompilation>false</useIncrementalCompilation>-->
+              <!--</configuration>-->
+              <!--&lt;!&ndash;BUG JDK-8062800&ndash;&gt;-->
+              <!--</execution>-->
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>qm-qs-checkstyle</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <!-- Check style on build -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>validate</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+
+                  <!--<excludes>**/generated/**/*</excludes>-->
+                  <excludes>**/generated-sources/vwscdn/**/*</excludes>
+                  <excludes>**/generated-sources/wscdn/**/*</excludes>
+                  <excludes>com/vaadin/**/*,in/virit/**/*,com/acme/**/*</excludes>
+                  <checkstyleRules>
+                    <module name="Checker">
+                      <!--<module name="JavadocPackage"/>-->
+                      <!--<module name="NewlineAtEndOfFile"/>-->
+                      <module name="FileTabCharacter"/>
+
+                      <module name="RegexpSingleline">
+                        <property name="format" value="\s+$"/>
+                        <property name="minimum" value="0"/>
+                        <property name="maximum" value="0"/>
+                        <property name="message" value="Line has trailing spaces."/>
+                      </module>
+
+                      <module name="TreeWalker">
+
+                        <module name="FileContentsHolder"/>
+                        <!-- Checkstyle has a bug that disallows @return in annotation methods, enable only on demand -->
+                        <!--<module name="JavadocMethod"/>-->
+
+                        <!--<module name="JavadocType"/>-->
+                        <!--<module name="JavadocVariable"/>-->
+                        <!--<module name="JavadocStyle"/>-->
+
+                        <module name="TodoComment"/>
+
+                        <module name="ConstantName"/>
+                        <module name="LocalFinalVariableName"/>
+                        <module name="LocalVariableName"/>
+                        <module name="MemberName"/>
+                        <module name="MethodName"/>
+                        <module name="PackageName"/>
+                        <module name="ParameterName"/>
+                        <module name="StaticVariableName"/>
+                        <module name="TypeName"/>
+
+                        <module name="IllegalImport"/>
+                        <module name="RedundantImport"/>
+                        <module name="UnusedImports"/>
+
+                        <module name="EmptyForIteratorPad"/>
+                        <module name="GenericWhitespace"/>
+                        <module name="MethodParamPad"/>
+                        <module name="ParenPad"/>
+                        <module name="TypecastParenPad"/>
+                        <module name="WhitespaceAfter"/>
+                        <module name="WhitespaceAround">
+                          <!-- The RCURLY token has strange semantics where annotation arrays should have a spacing while normal
+                               arrays should not have such a spacing - therefore, we rather exclude it from automatic checks -->
+                          <property name="tokens"
+                                    value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,EQUAL,GE,GT,LAND,LCURLY,LE,LITERAL_ASSERT,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,QUESTION,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,TYPE_EXTENSION_AND"/>
+                        </module>
+                        <!--<module name="NoWhitespaceAfter"/>-->
+                        <!--<module name="NoWhitespaceBefore"/>-->
+
+                        <module name="ModifierOrder"/>
+
+                        <module name="LeftCurly"/>
+                        <module name="RightCurly"/>
+
+                        <module name="EmptyStatement"/>
+                        <module name="EqualsHashCode"/>
+                        <module name="IllegalInstantiation"/>
+                        <module name="MissingSwitchDefault"/>
+                        <!--<module name="RedundantThrows"/>-->
+                        <module name="SimplifyBooleanExpression"/>
+                        <module name="SimplifyBooleanReturn"/>
+
+                        <module name="HideUtilityClassConstructor"/>
+                        <module name="InterfaceIsType"/>
+
+                        <module name="ArrayTypeStyle"/>
+                        <module name="UpperEll"/>
+                      </module>
+                      <module name="SuppressionCommentFilter"/>
+                    </module>
+
+
+                  </checkstyleRules>
+                  <consoleOutput>true</consoleOutput>
+                  <failsOnError>true</failsOnError>
+                  <encoding>UTF-8</encoding>
+                  <outputFileFormat>plain</outputFileFormat>
+                  <outputFileFormat>xml</outputFileFormat>
+                </configuration>
+
+              </execution>
+            </executions>
+
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>qm-qs-version-check</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>repo-allow-vaadin</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>vaadin-addons</id>
+          <url>http://maven.vaadin.com/vaadin-addons</url>
+          <!--<url>http://maven.vaadin.com/</url>-->
+        </repository>
+      </repositories>
+      <pluginRepositories>
+
+      </pluginRepositories>
+    </profile>
+    <profile>
+      <id>repo-allow-vaadin-snapshots</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>vaadin-prereleases</id>
+          <url>http://maven.vaadin.com/vaadin-prereleases</url>
+        </repository>
+        <repository>
+          <id>vaadin-snapshots</id>
+          <name>Vaadin snapshot repository</name>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+        </repository>
+
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>vaadin-prereleases</id>
+          <name>Vaadin Pre-releases</name>
+          <url>https://maven.vaadin.com/vaadin-prereleases</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+    <profile>
+      <id>repo-allow-maven-snapshots</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>snapshots-repo</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+</project>

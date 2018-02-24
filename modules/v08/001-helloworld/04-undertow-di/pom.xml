@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>vaadin-m-v08-001-helloworld</artifactId>
+    <groupId>org.rapidpm.vaadin.workshop</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>vaadin-m-v08-001-helloworld-04-undertow-di</artifactId>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.rapidpm.dynamic-cdi</groupId>
+      <artifactId>rapidpm-dynamic-cdi-modules-core</artifactId>
+      <version>${rapidpm-ddi.version}</version>
+    </dependency>
+
+
+    <!--Undertow-->
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-websockets-jsr</artifactId>
+    </dependency>
+    <!--Undertow-->
+
+    <!--APM - Stagemonitor-->
+    <!--APM -->
+    <dependency>
+      <groupId>org.stagemonitor</groupId>
+      <artifactId>stagemonitor-web-servlet</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.stagemonitor</groupId>
+      <artifactId>stagemonitor-tracing</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.stagemonitor</groupId>
+      <artifactId>stagemonitor-jvm</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.stagemonitor</groupId>
+      <artifactId>stagemonitor-os</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.stagemonitor</groupId>
+      <artifactId>stagemonitor-tracing-elasticsearch</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+  </dependencies>
+</project>

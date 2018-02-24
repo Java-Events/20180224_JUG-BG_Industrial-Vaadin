@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>vaadin-m</artifactId>
+    <groupId>org.rapidpm.vaadin.workshop</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>vaadin-m-v08</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>001-helloworld</module>
+    <module>002-core-topics</module>
+    <module>003-demo-00</module>
+    <module>004-tdd-topics</module>
+    <module>005-mutation-testing</module>
+  </modules>
+
+
+  <properties>
+    <vaadin.version>8.3.1</vaadin.version>
+  </properties>
+
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-bom</artifactId>
+        <type>pom</type>
+        <scope>import</scope>
+        <version>${vaadin.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

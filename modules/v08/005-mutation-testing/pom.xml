@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>vaadin-m-v08</artifactId>
+    <groupId>org.rapidpm.vaadin.workshop</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>vaadin-m-v08-005-mutation-testing</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>mutation-testing-01-core-java</module>
+    <module>mutation-testing-02-vaadin</module>
+  </modules>
+
+<profiles>
+  <profile>
+    <id>qm-qs-pitest</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+    <dependencies>
+      <dependency>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest</artifactId>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+    <build>
+      <plugins>
+        <!--Enable mutation testing-->
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.pitest</groupId>
+              <artifactId>pitest-junit5-plugin</artifactId>
+              <version>${pitest-junit5-plugin.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <threads>2</threads>
+            <outputFormats>
+              <outputFormat>XML</outputFormat>
+              <outputFormat>HTML</outputFormat>
+            </outputFormats>
+            <targetClasses>
+              <param>${pitest-prod-classes}</param>
+              <param>org.reflections.*</param>
+            </targetClasses>
+            <targetTests>
+              <param>${pitest-test-classes}</param>
+            </targetTests>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+    <reporting>
+      <plugins>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <reportSets>
+            <reportSet>
+              <reports>
+                <report>report</report>
+              </reports>
+            </reportSet>
+          </reportSets>
+        </plugin>
+      </plugins>
+    </reporting>
+  </profile>
+</profiles>
+</project>
