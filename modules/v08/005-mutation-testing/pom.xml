@@ -16,7 +16,60 @@
     <module>mutation-testing-02-vaadin</module>
   </modules>
 
+
+  <dependencies>
+    <dependency>
+      <!--  must be on the classpath  -->
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.agent</artifactId>
+      <classifier>runtime</classifier>
+      <version>${jacoco.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.ant</artifactId>
+      <version>${jacoco.version}</version>
+      <!--<scope>test</scope>-->
+    </dependency>
+
+    <!--jUnit5-->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${junit.jupiter.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <scope>test</scope>
+      <version>${junit.platform.version}</version>
+    </dependency>
+    <!-- Only required to run tests in an IDE that bundles an older version -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+      <version>${junit.jupiter.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest</artifactId>
+      <version>${pitest.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
 <profiles>
+
   <profile>
     <id>qm-qs-pitest</id>
     <activation>
@@ -74,6 +127,177 @@
         </plugin>
       </plugins>
     </reporting>
+  </profile>
+  <profile>
+    <id>qm-qs-jacoco</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+    <dependencies>
+      <dependency>
+        <!--  must be on the classpath  -->
+        <groupId>org.jacoco</groupId>
+        <artifactId>org.jacoco.agent</artifactId>
+        <classifier>runtime</classifier>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jacoco</groupId>
+        <artifactId>org.jacoco.ant</artifactId>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/org/rapidpm/**/*</include>
+            </includes>
+          </configuration>
+          <executions>
+            <execution>
+              <id>default-instrument</id>
+              <goals>
+                <goal>instrument</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-restore-instrumented-classes</id>
+              <goals>
+                <goal>restore-instrumented-classes</goal>
+              </goals>
+            </execution>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-report</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <rule>
+                    <element>BUNDLE</element>
+                    <limits>
+                      <limit>
+                        <counter>COMPLEXITY</counter>
+                        <value>COVEREDRATIO</value>
+                        <!--<minimum>0.60</minimum>-->
+                        <minimum>0.00</minimum>
+                      </limit>
+                    </limits>
+                  </rule>
+                  <!--<rule>-->
+                  <!--<element>CLASS</element>-->
+                  <!--<excludes>-->
+                  <!--<exclude>**/junit/**</exclude>-->
+                  <!--</excludes>-->
+                  <!--<limits>-->
+                  <!--<limit>-->
+                  <!--<counter>LINE</counter>-->
+                  <!--<value>COVEREDRATIO</value>-->
+                  <!--<minimum>0.50</minimum>-->
+                  <!--</limit>-->
+                  <!--</limits>-->
+                  <!--</rule>-->
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Directory plugin to find parent root directory absolute path -->
+
+      </plugins>
+    </build>
+  </profile>
+  <profile>
+    <id>qm-qs-surefire-fork</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <inherited>true</inherited>
+          <configuration>
+            <includes>
+              <include>**/junit/**</include>
+            </includes>
+            <excludes>
+              <exclude>**/*ini/**</exclude>
+              <exclude>**/*txt/**</exclude>
+              <exclude>**/*.jpg</exclude>
+
+            </excludes>
+            <argLine>-Xmx286m -Dsonar.pitest.mode=reuseReport</argLine>
+            <!--<threadCount>4</threadCount>-->
+            <!--<forkMode>always</forkMode>-->
+            <!--<forkCount>4</forkCount>-->
+            <reuseForks>false</reuseForks>
+            <forkCount>4</forkCount>
+            <reportFormat>xml</reportFormat>
+            <reportFormat>html</reportFormat>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+  <profile>
+    <id>qm-qs-jacoco-junit</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <inherited>true</inherited>
+          <configuration>
+            <systemPropertyVariables>
+              <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+            </systemPropertyVariables>
+            <includes>
+              <include>**/junit/**</include>
+            </includes>
+            <excludes>
+              <exclude>**/*ini/**</exclude>
+              <exclude>**/*txt/**</exclude>
+              <exclude>**/*.jpg</exclude>
+
+            </excludes>
+            <argLine>-Xmx286m -Dsonar.pitest.mode=reuseReport</argLine>
+
+            <forkCount>4</forkCount>
+            <reuseForks>false</reuseForks>
+            <!--<forkMode>always</forkMode>-->
+
+            <threadCount>4</threadCount>
+            <reportFormat>xml</reportFormat>
+            <reportFormat>html</reportFormat>
+            <!--<testSourceDirectory>${project.build.directory}/generated-test-sources/test-annotations</testSourceDirectory>-->
+            <!--<classesDirectory>target/generated-classes/emma/classes</classesDirectory>-->
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
   </profile>
 </profiles>
 </project>
